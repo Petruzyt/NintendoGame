@@ -9,6 +9,9 @@ public class PlayerMovement : MonoBehaviour
     public float jumpSpeed;
     public float jumpButtonGracePeroid;
 
+    public Transform cameraTransform;
+
+
     private CharacterController characterController;
     private float ySpeed;
     private float originalStepOffset;
@@ -32,6 +35,8 @@ public class PlayerMovement : MonoBehaviour
         float magnitude = movementDirection.magnitude;
         magnitude = Mathf.Clamp01(movementDirection.magnitude) * speed;
         movementDirection.Normalize();
+
+        movementDirection = Quaternion.AngleAxis(cameraTransform.rotation.eulerAngles.y, Vector3.up) * movementDirection;
 
         ySpeed += Physics.gravity.y * Time.deltaTime;
 
@@ -73,5 +78,17 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
         }
 
+    }
+
+    private void OnApplicationFocus(bool focus)
+    {
+        if (focus)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
     }
 }
